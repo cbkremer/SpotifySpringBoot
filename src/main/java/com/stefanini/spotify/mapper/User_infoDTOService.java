@@ -4,7 +4,6 @@ import com.stefanini.spotify.dto.User_infoDTO;
 import com.stefanini.spotify.exception.PlaylistNotFoundException;
 import com.stefanini.spotify.model.Playlist;
 import com.stefanini.spotify.model.User_info;
-import com.stefanini.spotify.repository.User_infoRepository;
 import com.stefanini.spotify.service.PlaylistService;
 import com.stefanini.spotify.service.User_infoService;
 import org.apache.catalina.User;
