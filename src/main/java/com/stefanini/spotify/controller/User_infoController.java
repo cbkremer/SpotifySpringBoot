@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping(path = "user_info")
@@ -42,6 +44,25 @@ public class User_infoController {
     public User_info addUser_info(@RequestBody User_infoDTO user_infoDTO) throws User_infoNotFoundException{
         User_info newUser_info = userInfoDTOService.mapUser(user_infoDTO);
         return user_infoService.save(newUser_info);
+    }
+    @PutMapping("/{id}")
+    public User_info updateUser_info(@PathVariable Long id,@RequestBody User_infoDTO user_infoDTO) throws User_infoNotFoundException{
+        User_info user_info = userInfoDTOService.mapUser(user_infoDTO);
+        user_info.setId(id);
+        return user_infoService.save(user_info);
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteUser_info(@PathVariable Long id){
+        User_info user_info;
+        try{
+            user_info = user_infoService.findById(id);
+            user_infoService.delete(user_info);
+            return "Usuário "+user_info.getName()+" deletado com sucesso";
+        }catch (User_infoNotFoundException ex){
+            Logger.getLogger(User_infoController.class.getName()).log(Level.SEVERE,null,ex);
+        }
+        return "Ocorreu um erro";
     }
 
     /*public String saveUser(User_infoDTO user) throws PlaylistNotFoundException{

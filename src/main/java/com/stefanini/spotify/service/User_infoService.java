@@ -24,4 +24,7 @@ public class User_infoService {
     public User_info save(User_info userInfo){
         return userInfoRepository.save(userInfo);
     }
+    public void delete(User_info userInfo){
+        userInfoRepository.delete(userInfo);
+    }
 }
