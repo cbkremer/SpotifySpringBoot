@@ -15,13 +15,13 @@ public class PlaylistDTOService {
         this.userService = userService;
     }
 
-    public Playlist mapPlaylist(PlaylistDTO playlist)throws User_infoNotFoundException {
+    public Playlist mapPlaylist(PlaylistDTO playlist,Long id)throws User_infoNotFoundException {
         User_info userInfo;
         Playlist newPlaylist = new Playlist(
                                         null,
                                         playlist.getName(),
                                         playlist.getQuantity(),
-                userInfo = userService.findById(playlist.getId_user())
+                userInfo = userService.findById(id)
         );
         return newPlaylist;
     }

@@ -3,12 +3,12 @@ package com.stefanini.spotify.dto;
 public class PlaylistDTO {
     private String name;
     private Long quantity;
-    private Long id_user;
+    private String user_name;
 
-    public PlaylistDTO(String name, Long quantity, Long id_user, Long id_music){
+    public PlaylistDTO(String name, Long quantity, String user_name){
         this.name = name;
         this.quantity = quantity;
-        this.id_user = id_user;
+        this.user_name = user_name;
     }
     public PlaylistDTO(){
 
@@ -29,11 +29,7 @@ public class PlaylistDTO {
         return quantity;
     }
 
-    public void setId_user(Long id_user) {
-        this.id_user = id_user;
-    }
-
-    public Long getId_user() {
-        return id_user;
+    public String getUser_name(){
+        return user_name;
     }
 }

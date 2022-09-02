@@ -4,27 +4,30 @@ import com.stefanini.spotify.dto.PlaylistDTO;
 import com.stefanini.spotify.exception.User_infoNotFoundException;
 import com.stefanini.spotify.mapper.PlaylistDTOService;
 import com.stefanini.spotify.model.Playlist;
+import com.stefanini.spotify.model.User_info;
 import com.stefanini.spotify.service.PlaylistService;
+import com.stefanini.spotify.service.User_infoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 @RestController
+@RequestMapping(path = "playlist")
 public class PlaylistController {
     private final PlaylistService playlistService;
     private final PlaylistDTOService playlistDTOService;
+    private final User_infoService user_infoService;
     @Autowired
-    public PlaylistController(PlaylistDTOService playlistDTOService, PlaylistService playlistService){
+    public PlaylistController(PlaylistDTOService playlistDTOService, PlaylistService playlistService, User_infoService user_infoService){
         this.playlistDTOService = playlistDTOService;
         this.playlistService = playlistService;
+        this.user_infoService = user_infoService;
     }
 
     @Autowired
 
-    @RequestMapping(path = "/playlist")
+    @RequestMapping
     public ModelAndView loadHtml(){
         ModelAndView mv = new ModelAndView("playlsit");
         PlaylistDTO playlistDTO = new PlaylistDTO();
@@ -33,12 +36,12 @@ public class PlaylistController {
 
         return mv;
     }
-    @PostMapping(path = "playlist")
-    public String savePlaylist(PlaylistDTO playlist) throws User_infoNotFoundException {
-        Playlist newPlaylist = playlistDTOService.mapPlaylist(playlist);
-
+    @PostMapping("/{id}")
+    public String savePlaylist(@RequestBody PlaylistDTO playlistDTO, @PathVariable Long id) throws User_infoNotFoundException {
+        Playlist newPlaylist = playlistDTOService.mapPlaylist(playlistDTO,id);
         playlistService.save(newPlaylist);
-        return "redirect:/playlist";
+        User_info user = user_infoService.findById(id);
+        return user.getName()+", sua playlist:  "+playlistDTO.getName()+" foi criada com sucesso";
     }
 
 }
