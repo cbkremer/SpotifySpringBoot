@@ -41,7 +41,7 @@ public class PlaylistController {
         Playlist newPlaylist = playlistDTOService.mapPlaylist(playlistDTO,id);
         playlistService.save(newPlaylist);
         User_info user = user_infoService.findById(id);
-        return user.getName()+", sua playlist:  "+playlistDTO.getName()+" foi criada com sucesso";
+        return user.getName()+", sua playlist: "+playlistDTO.getName()+" foi criada com sucesso";
     }
 
 }
