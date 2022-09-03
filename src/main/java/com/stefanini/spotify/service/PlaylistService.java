@@ -17,9 +17,15 @@ public class PlaylistService {
     public List<Playlist> findAllPlaylists(){
         return playlistRepository.findAll();
     }
+    public Playlist findByName(String name)throws PlaylistNotFoundException{
+        return playlistRepository.findByName(name);
+    }
     public Playlist findById(Long id) throws PlaylistNotFoundException{
         return playlistRepository.findById(id).
                 orElseThrow(() -> new PlaylistNotFoundException(id));
+    }
+    public Playlist findByTag(int tag)throws PlaylistNotFoundException{
+        return playlistRepository.findByTag(tag);
     }
     public Playlist save(Playlist playlist){
         return playlistRepository.save(playlist);

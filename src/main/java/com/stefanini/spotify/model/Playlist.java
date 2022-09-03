@@ -20,17 +20,19 @@ public class Playlist {
 
     @Column(nullable = false)
     private Long quantity;
-
+    @Column(nullable = false)
+    private int tag;
     @ManyToOne
     //@JsonIgnore
     @JoinColumn(name = "user_info_id")
     private User_info userInfo;
 
-    public Playlist(Long id, String name, Long quantity, User_info userInfo){
+    public Playlist(Long id, String name, Long quantity, User_info userInfo,int tag){
         this.id = id;
         this.name = name;
         this.quantity = quantity;
         this.userInfo = userInfo;
+        this.tag = tag;
     }
     public Playlist(){
 
@@ -65,5 +67,13 @@ public class Playlist {
 
     public void setUserInfo(User_info userInfo) {
         this.userInfo = userInfo;
+    }
+
+    public int getTag() {
+        return tag;
+    }
+
+    public void setTag(int tag) {
+        this.tag = tag;
     }
 }

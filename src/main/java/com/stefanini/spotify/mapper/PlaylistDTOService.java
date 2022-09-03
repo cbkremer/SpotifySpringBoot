@@ -1,6 +1,7 @@
 package com.stefanini.spotify.mapper;
 
 import com.stefanini.spotify.dto.PlaylistDTO;
+import com.stefanini.spotify.exception.PlaylistNotFoundException;
 import com.stefanini.spotify.exception.User_infoNotFoundException;
 import com.stefanini.spotify.model.Playlist;
 import com.stefanini.spotify.model.User_info;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class PlaylistDTOService {
@@ -30,20 +32,33 @@ public class PlaylistDTOService {
                 playlistsDTO.add(new PlaylistDTO(
                         listPlaylist.getName(),
                         listPlaylist.getQuantity(),
-                        user.getName()
+                        user.getName(),
+                        listPlaylist.getTag()
                 ));
             }
         }
         return playlistsDTO;
     }
-    public Playlist mapPlaylist(PlaylistDTO playlist,Long id)throws User_infoNotFoundException {
+    public Playlist mapPlaylist(PlaylistDTO playlist,Long id)throws User_infoNotFoundException,PlaylistNotFoundException {
         User_info userInfo;
         Playlist newPlaylist = new Playlist(
                                         null,
                                         playlist.getName(),
                                         playlist.getQuantity(),
-                userInfo = userService.findById(id)
+                userInfo = userService.findById(id),
+                generateTag()
         );
         return newPlaylist;
+    }
+    private int generateTag()throws PlaylistNotFoundException {
+        Random rand = new Random();
+        int tag;
+        for (;;){
+            tag = rand.nextInt();
+            if(playlistService.findByTag(tag)==null)
+                break;
+        }
+
+        return Math.abs(tag);
     }
 }

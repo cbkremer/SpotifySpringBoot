@@ -40,16 +40,23 @@ public class PlaylistController {
         return mv;
     }
 
-    @PutMapping("/{id}")
-    public String updateUserPlaylist(@PathVariable Long id, @RequestBody PlaylistDTO playlistDTO)throws User_infoNotFoundException, PlaylistNotFoundException{
-        return "nao implementado ainda";
+    @PutMapping("/{user_id}")
+    public String updateUserPlaylist(@PathVariable Long user_id, @RequestBody PlaylistDTO playlistDTO)throws User_infoNotFoundException, PlaylistNotFoundException{
+        Playlist newPlaylist = playlistDTOService.mapPlaylist(playlistDTO,user_id);
+        Playlist playlist = playlistService.findByTag(playlistDTO.getTag());
+        String oldPlaylistName = playlist.getName();
+        newPlaylist.setTag(playlistDTO.getTag());
+        newPlaylist.setId(playlist.getId());
+        newPlaylist.setUserInfo(playlist.getUserInfo());
+        playlistService.save(newPlaylist);
+        return playlist.getUserInfo().getName()+", sua playlist "+oldPlaylistName+" foi atualizada";
     }
     @GetMapping("/{id}")
     public List<PlaylistDTO> getUserPlaylists(@PathVariable Long id)throws User_infoNotFoundException {
         return playlistDTOService.convertPlaylistsByUserId(id);
     }
     @PostMapping("/{id}")
-    public String savePlaylist(@RequestBody PlaylistDTO playlistDTO, @PathVariable Long id) throws User_infoNotFoundException {
+    public String savePlaylist(@RequestBody PlaylistDTO playlistDTO, @PathVariable Long id) throws User_infoNotFoundException,PlaylistNotFoundException {
         Playlist newPlaylist = playlistDTOService.mapPlaylist(playlistDTO,id);
         playlistService.save(newPlaylist);
         User_info user = user_infoService.findById(id);
