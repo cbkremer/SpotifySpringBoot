@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping(path = "playlist")
@@ -40,6 +42,18 @@ public class PlaylistController {
         return mv;
     }
 
+    @DeleteMapping
+    public String deleteUserPlaylist(@RequestBody PlaylistDTO playlistDTO)throws PlaylistNotFoundException{
+        try {
+            Playlist playlist = playlistService.findByTag(playlistDTO.getTag());
+            playlistService.delete(playlist);
+            return "Playlist " + playlist.getName() + " deletada com sucesso";
+        }
+        catch(PlaylistNotFoundException ex){
+            Logger.getLogger(PlaylistController.class.getName()).log(Level.SEVERE,null,ex);
+        }
+        return "Ocorreu um erro ao deletar playlist";
+    }
     @PutMapping("/{user_id}")
     public String updateUserPlaylist(@PathVariable Long user_id, @RequestBody PlaylistDTO playlistDTO)throws User_infoNotFoundException, PlaylistNotFoundException{
         Playlist newPlaylist = playlistDTOService.mapPlaylist(playlistDTO,user_id);

@@ -62,7 +62,7 @@ public class User_infoController {
         }catch (User_infoNotFoundException ex){
             Logger.getLogger(User_infoController.class.getName()).log(Level.SEVERE,null,ex);
         }
-        return "Ocorreu um erro";
+        return "Ocorreu um erro ao deletar usuário";
     }
 
     /*public String saveUser(User_infoDTO user) throws PlaylistNotFoundException{

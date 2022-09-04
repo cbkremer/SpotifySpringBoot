@@ -30,4 +30,7 @@ public class PlaylistService {
     public Playlist save(Playlist playlist){
         return playlistRepository.save(playlist);
     }
+    public void delete(Playlist playlist){
+        playlistRepository.delete(playlist);
+    }
 }
