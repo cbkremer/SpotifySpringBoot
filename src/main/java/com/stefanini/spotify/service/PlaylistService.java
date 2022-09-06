@@ -2,6 +2,7 @@ package com.stefanini.spotify.service;
 
 import com.stefanini.spotify.exception.PlaylistNotFoundException;
 import com.stefanini.spotify.model.Playlist;
+import com.stefanini.spotify.model.User_info;
 import com.stefanini.spotify.repository.PlaylistRepository;
 import org.springframework.stereotype.Service;
 
@@ -32,5 +33,8 @@ public class PlaylistService {
     }
     public void delete(Playlist playlist){
         playlistRepository.delete(playlist);
+    }
+    public User_info getUser_info(Playlist playlist){
+        return playlist.getUserInfo();
     }
 }

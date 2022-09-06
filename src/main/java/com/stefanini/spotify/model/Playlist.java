@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @Entity
@@ -27,12 +28,17 @@ public class Playlist {
     @JoinColumn(name = "user_info_id")
     private User_info userInfo;
 
-    public Playlist(Long id, String name, Long quantity, User_info userInfo,int tag){
+    @ManyToMany
+    @JoinTable(name = "playlist_music",joinColumns = @JoinColumn(name = "playlist_id"), inverseJoinColumns =  @JoinColumn(name = "music_id"))
+    private List<Music> musics;
+
+    public Playlist(Long id, String name, Long quantity, User_info userInfo,int tag,List<Music> musics){
         this.id = id;
         this.name = name;
         this.quantity = quantity;
         this.userInfo = userInfo;
         this.tag = tag;
+        this.musics=musics;
     }
     public Playlist(){
 

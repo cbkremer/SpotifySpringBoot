@@ -23,6 +23,19 @@ public class PlaylistDTOService {
         this.playlistService = playlistService;
     }
 
+    public List<PlaylistDTO> convertAllPlaylists(){
+        List<PlaylistDTO> allPlaylistsDTO = new ArrayList<>();
+        List<Playlist> allPlaylists = playlistService.findAllPlaylists();
+        for (Playlist playlist: allPlaylists) {
+            allPlaylistsDTO.add(new PlaylistDTO(
+                    playlist.getName(),
+                    playlist.getQuantity(),
+                    playlist.getUserInfo().getName(),
+                    playlist.getTag()
+            ));
+        }
+        return allPlaylistsDTO;
+    }
     public List<PlaylistDTO> convertPlaylistsByUserId(Long id)throws User_infoNotFoundException{
         User_info user = userService.findById(id);
         List<Playlist> playlists = playlistService.findAllPlaylists();
@@ -46,7 +59,8 @@ public class PlaylistDTOService {
                                         playlist.getName(),
                                         playlist.getQuantity(),
                 userInfo = userService.findById(id),
-                generateTag()
+                generateTag(),
+                null
         );
         return newPlaylist;
     }

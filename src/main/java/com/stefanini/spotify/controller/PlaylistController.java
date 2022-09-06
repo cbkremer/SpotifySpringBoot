@@ -69,6 +69,10 @@ public class PlaylistController {
     public List<PlaylistDTO> getUserPlaylists(@PathVariable Long id)throws User_infoNotFoundException {
         return playlistDTOService.convertPlaylistsByUserId(id);
     }
+    @GetMapping
+    public List<PlaylistDTO> getAllPlaylists(){
+        return playlistDTOService.convertAllPlaylists();
+    }
     @PostMapping("/{id}")
     public String savePlaylist(@RequestBody PlaylistDTO playlistDTO, @PathVariable Long id) throws User_infoNotFoundException,PlaylistNotFoundException {
         Playlist newPlaylist = playlistDTOService.mapPlaylist(playlistDTO,id);
