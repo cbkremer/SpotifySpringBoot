@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(path = "music")
 public class MusicController {
@@ -41,7 +43,7 @@ public class MusicController {
     }
 
     @GetMapping
-    public MusicDTO getAllMusics(){
-        return null;
+    public List<MusicDTO> getAllMusics(){
+        return musicDTOService.convertAllMusics();
     }
 }
