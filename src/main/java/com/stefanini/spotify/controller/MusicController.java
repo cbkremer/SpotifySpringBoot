@@ -40,13 +40,13 @@ public class MusicController {
     }
 
     @PostMapping
-    public Music addMusic(@RequestBody MusicDTO musicDTO){
+    public Music addMusic(@RequestBody MusicDTO musicDTO)throws MusicNotFoundException{
         Music newMusic = musicDTOService.mapMusic(musicDTO);
         return musicService.save(newMusic);
     }
 
     @GetMapping
-    public List<MusicDTO> getAllMusics(){
+    public List<MusicDTO> getAllMusics()throws MusicNotFoundException{
         return musicDTOService.convertAllMusics();
     }
     @DeleteMapping
@@ -60,5 +60,19 @@ public class MusicController {
             Logger.getLogger(MusicController.class.getName()).log(Level.SEVERE,null,ex);
         }
         return "Ocorreu um erro ao deletar a musica";
+    }
+    @PutMapping
+    public String updateMusic(@RequestBody MusicDTO musicDTO)throws MusicNotFoundException{
+        try {
+            Music music = musicService.findByTag(musicDTO.getTag());
+            String old_name = music.getName();
+            music.setName(musicDTO.getName());
+            musicService.save(music);
+            return "Música '" + old_name + "' atualizada para: '" + musicDTO.getName() + "' com sucesso";
+        }
+        catch(MusicNotFoundException ex){
+            Logger.getLogger(MusicController.class.getName()).log(Level.SEVERE,null,ex);
+        }
+        return "Ocorreu um erro ao atualizar a música";
     }
 }

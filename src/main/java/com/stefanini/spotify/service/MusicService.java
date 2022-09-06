@@ -34,4 +34,7 @@ public class MusicService {
     public Music findByName(String name)throws MusicNotFoundException{
         return musicRepository.findByName(name);
     }
+    public Music findByTag(int tag)throws MusicNotFoundException{
+        return musicRepository.findByTag(tag);
+    }
 }

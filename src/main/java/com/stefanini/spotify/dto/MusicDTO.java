@@ -7,10 +7,12 @@ import java.util.List;
 public class MusicDTO {
     private String name;
     private List<Playlist> playlists;
+    private int tag;
 
-    public MusicDTO(String name, List<Playlist> playlists){
+    public MusicDTO(String name, List<Playlist> playlists, int tag){
         this.name=name;
         this.playlists=playlists;
+        this.tag=tag;
     }
 
     public MusicDTO(){
@@ -30,5 +32,13 @@ public class MusicDTO {
 
     public List<Playlist> getPlaylists() {
         return playlists;
+    }
+
+    public int getTag() {
+        return tag;
+    }
+
+    public void setTag(int tag) {
+        this.tag = tag;
     }
 }

@@ -21,13 +21,16 @@ public class Music {
     @JsonBackReference
     private List<Playlist> playlists;
 
+    @Column(nullable = false)
+    private int tag;
     public Music(){
 
     }
-    public Music(Long id, String name,List<Playlist> playlists){
+    public Music(Long id, String name,List<Playlist> playlists,int tag){
         this.id=id;
         this.name=name;
         this.playlists=playlists;
+        this.tag=tag;
     }
 
     public void setId(Long id) {
@@ -44,5 +47,21 @@ public class Music {
 
     public String getName() {
         return name;
+    }
+
+    public List<Playlist> getPlaylists() {
+        return playlists;
+    }
+
+    public void setPlaylists(List<Playlist> playlists) {
+        this.playlists = playlists;
+    }
+
+    public int getTag() {
+        return tag;
+    }
+
+    public void setTag(int tag) {
+        this.tag = tag;
     }
 }
