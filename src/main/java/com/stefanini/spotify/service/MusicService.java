@@ -1,5 +1,6 @@
 package com.stefanini.spotify.service;
 
+import com.stefanini.spotify.dto.MusicDTO;
 import com.stefanini.spotify.exception.MusicNotFoundException;
 import com.stefanini.spotify.model.Music;
 import com.stefanini.spotify.repository.MusicRepository;
@@ -29,5 +30,8 @@ public class MusicService {
     }
     public void delete(Music music){
         musicRepository.delete(music);
+    }
+    public Music findByName(String name)throws MusicNotFoundException{
+        return musicRepository.findByName(name);
     }
 }
