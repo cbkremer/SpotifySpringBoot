@@ -31,7 +31,8 @@ public class PlaylistDTOService {
                     playlist.getName(),
                     playlist.getQuantity(),
                     playlist.getUserInfo().getName(),
-                    playlist.getTag()
+                    playlist.getTag(),
+                    null
             ));
         }
         return allPlaylistsDTO;
@@ -46,7 +47,8 @@ public class PlaylistDTOService {
                         listPlaylist.getName(),
                         listPlaylist.getQuantity(),
                         user.getName(),
-                        listPlaylist.getTag()
+                        listPlaylist.getTag(),
+                        listPlaylist.getMusics()
                 ));
             }
         }

@@ -1,7 +1,9 @@
 package com.stefanini.spotify.mapper;
 
+import com.stefanini.spotify.dto.PlaylistDTO;
 import com.stefanini.spotify.dto.User_infoDTO;
 import com.stefanini.spotify.exception.PlaylistNotFoundException;
+import com.stefanini.spotify.exception.User_infoNotFoundException;
 import com.stefanini.spotify.model.Playlist;
 import com.stefanini.spotify.model.User_info;
 import com.stefanini.spotify.service.PlaylistService;
@@ -17,28 +19,45 @@ import java.util.stream.Collectors;
 @Service
 public class User_infoDTOService {
     private final PlaylistService playlistService;
+    private final PlaylistDTOService playlistDTOService;
+
 
     @Autowired
-    public User_infoDTOService(PlaylistService playlistService){
+    public User_infoDTOService(PlaylistService playlistService,PlaylistDTOService playlistDTOService){
         this.playlistService = playlistService;
+        this.playlistDTOService = playlistDTOService;
     }
-    public static List<User_infoDTO> convertList(List<User_info> users) {
-        //User_infoService user_infoService;
+    public static List<User_infoDTO> convertList(List<User_info> users,List<Playlist> playlists)throws User_infoNotFoundException {
         List<User_infoDTO> allUsers = new ArrayList<>();
+
         for (User_info user : users) {
-                allUsers.add(new User_infoDTO(
-                        user.getName(),
-                        user.getEmail(),
-                        null
-                ));
+            List<PlaylistDTO> userPlaylists = new ArrayList<>();
+            for (Playlist playlist: playlists) {
+                if(playlist.getUserInfo().getId()==user.getId()){
+                    userPlaylists.add(new PlaylistDTO(
+                            playlist.getName(),
+                            playlist.getQuantity(),
+                            playlist.getUserInfo().getName(),
+                            playlist.getTag(),
+                            null
+                    ));
+                }
+            }
+            allUsers.add(new User_infoDTO(
+                    user.getName(),
+                    user.getEmail(),
+                    null,
+                    userPlaylists
+            ));
         }
         return allUsers;
     }
-    public static User_infoDTO convertUser(User_info user){
+    public static User_infoDTO convertUser(User_info user,List<PlaylistDTO> playlistsDTO){
         User_infoDTO newUser_infoDTO = new User_infoDTO(
           user.getName(),
           user.getEmail(),
-                null
+                null,
+                playlistsDTO
         );
         return newUser_infoDTO;
     }

@@ -82,4 +82,12 @@ public class Playlist {
     public void setTag(int tag) {
         this.tag = tag;
     }
+
+    public void setMusics(List<Music> musics) {
+        this.musics = musics;
+    }
+
+    public List<Music> getMusics() {
+        return musics;
+    }
 }

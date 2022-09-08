@@ -9,13 +9,13 @@ public class User_infoDTO {
     private String name;
     private String email;
     private String password;
-    //private List<Playlist> playlists;
+    private List<PlaylistDTO> playlistsDTO;
 
-    public User_infoDTO(String name, String email, String password){
+    public User_infoDTO(String name, String email, String password, List<PlaylistDTO> playlistsDTO){
         this.name = name;
         this.email = email;
         this.password = password;
-        //this.playlists = playlists;
+        this.playlistsDTO = playlistsDTO;
     }
 
     public User_infoDTO() {
@@ -46,4 +46,11 @@ public class User_infoDTO {
         return password;
     }
 
+    public void setPlaylistsDTO(List<PlaylistDTO> playlistsDTO) {
+        this.playlistsDTO = playlistsDTO;
+    }
+
+    public List<PlaylistDTO> getPlaylistsDTO() {
+        return playlistsDTO;
+    }
 }

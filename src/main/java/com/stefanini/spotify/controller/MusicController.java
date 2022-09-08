@@ -4,9 +4,12 @@ package com.stefanini.spotify.controller;
 import com.stefanini.spotify.dto.MusicDTO;
 import com.stefanini.spotify.dto.PlaylistDTO;
 import com.stefanini.spotify.exception.MusicNotFoundException;
+import com.stefanini.spotify.exception.PlaylistNotFoundException;
 import com.stefanini.spotify.mapper.MusicDTOService;
 import com.stefanini.spotify.model.Music;
+import com.stefanini.spotify.model.Playlist;
 import com.stefanini.spotify.service.MusicService;
+import com.stefanini.spotify.service.PlaylistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -20,11 +23,13 @@ import java.util.logging.Logger;
 public class MusicController {
     private final MusicService musicService;
     private final MusicDTOService musicDTOService;
+    private final PlaylistService playlistService;
 
     @Autowired
-    public MusicController(MusicService musicService, MusicDTOService musicDTOService){
+    public MusicController(MusicService musicService, MusicDTOService musicDTOService,PlaylistService playlistService){
         this.musicService=musicService;
         this.musicDTOService=musicDTOService;
+        this.playlistService=playlistService;
     }
 
     @Autowired
@@ -74,5 +79,19 @@ public class MusicController {
             Logger.getLogger(MusicController.class.getName()).log(Level.SEVERE,null,ex);
         }
         return "Ocorreu um erro ao atualizar a música";
+    }
+    @PutMapping("{playlist_tag}")
+    public String addMusicToPlaylist(@PathVariable int playlist_tag, @RequestBody MusicDTO musicDTO)throws MusicNotFoundException, PlaylistNotFoundException {
+        Playlist playlist = playlistService.findByTag(playlist_tag);
+        Music music = musicService.findByTag(musicDTO.getTag());
+        List <Music> musics = playlist.getMusics();
+        List<Playlist> playlists = music.getPlaylists();
+        musics.add(music);
+        playlists.add(playlist);
+        playlist.setMusics(musics);
+        playlistService.save(playlist);
+        music.setPlaylists(playlists);
+        musicService.save(music);
+        return "ok?";
     }
 }

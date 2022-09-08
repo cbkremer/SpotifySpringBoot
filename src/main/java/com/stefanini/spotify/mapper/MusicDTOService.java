@@ -5,6 +5,7 @@ import com.stefanini.spotify.dto.MusicDTO;
 import com.stefanini.spotify.exception.MusicNotFoundException;
 import com.stefanini.spotify.exception.PlaylistNotFoundException;
 import com.stefanini.spotify.model.Music;
+import com.stefanini.spotify.model.Playlist;
 import com.stefanini.spotify.service.MusicService;
 import org.springframework.stereotype.Service;
 
