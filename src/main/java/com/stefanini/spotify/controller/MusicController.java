@@ -52,6 +52,7 @@ public class MusicController {
 
     @GetMapping
     public List<MusicDTO> getAllMusics()throws MusicNotFoundException{
+
         return musicDTOService.convertAllMusics();
     }
     @DeleteMapping

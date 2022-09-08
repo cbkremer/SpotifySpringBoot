@@ -6,12 +6,12 @@ import java.util.List;
 
 public class MusicDTO {
     private String name;
-    private List<Playlist> playlists;
+    private List<PlaylistDTO> playlistsDTO;
     private int tag;
 
-    public MusicDTO(String name, List<Playlist> playlists, int tag){
+    public MusicDTO(String name, List<PlaylistDTO> playlistsDTO, int tag){
         this.name=name;
-        this.playlists=playlists;
+        this.playlistsDTO=playlistsDTO;
         this.tag=tag;
     }
 
@@ -26,12 +26,12 @@ public class MusicDTO {
         return name;
     }
 
-    public void setPlaylists(List<Playlist> playlists) {
-        this.playlists = playlists;
+    public void setPlaylists(List<PlaylistDTO> playlistsDTO) {
+        this.playlistsDTO = playlistsDTO;
     }
 
-    public List<Playlist> getPlaylists() {
-        return playlists;
+    public List<PlaylistDTO> getPlaylistsDTO() {
+        return playlistsDTO;
     }
 
     public int getTag() {
