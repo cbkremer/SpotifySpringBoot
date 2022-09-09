@@ -69,6 +69,10 @@ public class PlaylistController {
     public List<PlaylistDTO> getUserPlaylists(@PathVariable Long id)throws User_infoNotFoundException {
         return playlistDTOService.convertPlaylistsByUserId(id);
     }
+    @GetMapping("/music/{id}")
+    public List<PlaylistDTO> getUserPlaylistMusic(@PathVariable Long id)throws User_infoNotFoundException{
+        return null;
+    }
     @GetMapping
     public List<PlaylistDTO> getAllPlaylists(){
         return playlistDTOService.convertAllPlaylists();
