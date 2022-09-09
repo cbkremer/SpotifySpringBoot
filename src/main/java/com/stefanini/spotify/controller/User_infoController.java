@@ -68,22 +68,51 @@ public class User_infoController {
             return "O nome '"+user_infoDTO.getName()+"' já existe";
         }
     }
-    @PutMapping("/{id}")
-    public String updateUser_info(@PathVariable Long id,@RequestBody User_infoDTO user_infoDTO) throws User_infoNotFoundException{
-        User_info newUser = user_infoService.findByName(user_infoDTO.getName());
+    @PutMapping("/name/{id}")
+    public String updateUser_infoName(@PathVariable Long id,@RequestBody User_infoDTO user_infoDTO) throws User_infoNotFoundException{
+        User_info newUserName = user_infoService.findByName(user_infoDTO.getName());
         User_info oldUser_info = user_infoService.findById(id);
-        System.out.println(newUser.getName());
-        if(newUser == null) {
+        if(newUserName==null) {
+            String oldName = oldUser_info.getName();
             User_info user_info = userInfoDTOService.mapUser(user_infoDTO);
-            user_info.setId(id);
+            user_info.setEmail(oldUser_info.getEmail());
+            user_info.setPassword(oldUser_info.getPassword());
+            user_info.setId(oldUser_info.getId());
             user_infoService.save(user_info);
-            return "Usuário "+oldUser_info.getName()+" atualizado para: "+newUser.getName();
+            return "O nome '"+oldName+"' foi atualizado para '"+user_infoDTO.getName()+"' com sucesso";
         }
         else{
             return "O nome '"+user_infoDTO.getName()+"' já existe";
         }
     }
+    @PutMapping("/email/{id}")
+    public String updateUser_infoEmail(@PathVariable Long id,@RequestBody User_infoDTO user_infoDTO) throws User_infoNotFoundException{
+        User_info newUserEmail = user_infoService.findByEmail(user_infoDTO.getEmail());
+        User_info oldUser_info = user_infoService.findById(id);
+        if(newUserEmail==null) {
+            String oldEmail = oldUser_info.getEmail();
+            User_info user_info = userInfoDTOService.mapUser(user_infoDTO);
+            user_info.setName(oldUser_info.getName());
+            user_info.setPassword(oldUser_info.getPassword());
+            user_info.setId(oldUser_info.getId());
+            user_infoService.save(user_info);
+            return "O email '"+oldEmail+"' foi atualizado para '"+user_infoDTO.getEmail()+"' com sucesso";
+        }
+        else{
+            return "O email '"+user_infoDTO.getEmail()+"' já existe";
+        }
+    }
+    @PutMapping("/password/{id}")
+    public String updateUser_infoPassword(@PathVariable Long id,@RequestBody User_infoDTO user_infoDTO) throws User_infoNotFoundException{
+        User_info oldUser_info = user_infoService.findById(id);
+        User_info user_info = userInfoDTOService.mapUser(user_infoDTO);
+        user_info.setName(oldUser_info.getName());
+        user_info.setEmail(oldUser_info.getEmail());
+        user_info.setId(oldUser_info.getId());
+        user_infoService.save(user_info);
+        return "Senha atualizada com sucesso";
 
+    }
     @DeleteMapping("/{id}")
     public String deleteUser_info(@PathVariable Long id){
         User_info user_info;
