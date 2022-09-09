@@ -83,8 +83,6 @@ public class MusicController {
     }
     @PutMapping("{playlist_tag}")
     public String addMusicToPlaylist(@PathVariable int playlist_tag, @RequestBody MusicDTO musicDTO)throws MusicNotFoundException, PlaylistNotFoundException {
-        //validação nao colocar mesma musica na mesma playlist
-
         Playlist playlist = playlistService.findByTag(playlist_tag);
         Music music = musicService.findByTag(musicDTO.getTag());
         List <Music> musics = playlist.getMusics();
@@ -102,8 +100,6 @@ public class MusicController {
         musicService.save(music);
         return "A música '"+music.getName()+"' foi adicionada a playlist '"+playlist.getName()+"' com sucesso";
     }
-    //deletar musica e tirar musica da playlist dando conflito obviamente
-    //deletar musica nao funcionando com musicas ja pertencentes a uma playlist, preciso tirar ela da playlist antes
     @PutMapping("/remove/{playlist_tag}")
     public String removeMusicFromPlaylist(@PathVariable int playlist_tag, @RequestBody MusicDTO musicDTO)throws PlaylistNotFoundException, MusicNotFoundException{
         Playlist playlist = playlistService.findByTag(playlist_tag);
