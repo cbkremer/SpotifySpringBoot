@@ -51,15 +51,37 @@ public class User_infoController {
         return User_infoDTOService.convertUser(user,playlists);
     }
     @PostMapping
-    public User_info addUser_info(@RequestBody User_infoDTO user_infoDTO) throws User_infoNotFoundException{
-        User_info newUser_info = userInfoDTOService.mapUser(user_infoDTO);
-        return user_infoService.save(newUser_info);
+    public String addUser_info(@RequestBody User_infoDTO user_infoDTO) throws User_infoNotFoundException{
+        User_info newUser = user_infoService.findByName(user_infoDTO.getName());
+        if(newUser == null) {
+            newUser = user_infoService.findByEmail(user_infoDTO.getEmail());
+            if(newUser == null) {
+                User_info newUser_info = userInfoDTOService.mapUser(user_infoDTO);
+                user_infoService.save(newUser_info);
+                return "Usuário " + user_infoDTO.getName() + " criado com sucesso";
+            }
+            else{
+                return "O email '"+user_infoDTO.getEmail()+"' já existe";
+            }
+        }
+        else{
+            return "O nome '"+user_infoDTO.getName()+"' já existe";
+        }
     }
     @PutMapping("/{id}")
-    public User_info updateUser_info(@PathVariable Long id,@RequestBody User_infoDTO user_infoDTO) throws User_infoNotFoundException{
-        User_info user_info = userInfoDTOService.mapUser(user_infoDTO);
-        user_info.setId(id);
-        return user_infoService.save(user_info);
+    public String updateUser_info(@PathVariable Long id,@RequestBody User_infoDTO user_infoDTO) throws User_infoNotFoundException{
+        User_info newUser = user_infoService.findByName(user_infoDTO.getName());
+        User_info oldUser_info = user_infoService.findById(id);
+        System.out.println(newUser.getName());
+        if(newUser == null) {
+            User_info user_info = userInfoDTOService.mapUser(user_infoDTO);
+            user_info.setId(id);
+            user_infoService.save(user_info);
+            return "Usuário "+oldUser_info.getName()+" atualizado para: "+newUser.getName();
+        }
+        else{
+            return "O nome '"+user_infoDTO.getName()+"' já existe";
+        }
     }
 
     @DeleteMapping("/{id}")

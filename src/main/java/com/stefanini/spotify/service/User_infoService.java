@@ -27,4 +27,10 @@ public class User_infoService {
     public void delete(User_info userInfo){
         userInfoRepository.delete(userInfo);
     }
+    public User_info findByName(String name) throws User_infoNotFoundException{
+        return userInfoRepository.findByName(name);
+    }
+    public User_info findByEmail(String email){
+        return userInfoRepository.findByEmail(email);
+    }
 }
