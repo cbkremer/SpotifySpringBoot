@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -45,20 +46,21 @@ public class MusicController {
     }
 
     @PostMapping
-    public Music addMusic(@RequestBody MusicDTO musicDTO)throws MusicNotFoundException{
+    public String addMusic(@RequestBody MusicDTO musicDTO)throws MusicNotFoundException{
+        //por enquanto nenhuma validação parece necessária
         Music newMusic = musicDTOService.mapMusic(musicDTO);
-        return musicService.save(newMusic);
+        musicService.save(newMusic);
+        return "Musica "+musicDTO.getName()+" criada com sucesso";
     }
 
     @GetMapping
     public List<MusicDTO> getAllMusics()throws MusicNotFoundException{
-
         return musicDTOService.convertAllMusics();
     }
     @DeleteMapping
     public String deleteMusic(@RequestBody MusicDTO musicDTO)throws MusicNotFoundException {
         try{
-            Music music = musicService.findByName(musicDTO.getName());
+            Music music = musicService.findByTag(musicDTO.getTag());
             musicService.delete(music);
             return "Musica "+musicDTO.getName()+" deletada com sucesso";
         }
@@ -121,5 +123,24 @@ public class MusicController {
         playlistService.save(playlist);
         musicService.save(music);
         return "Musica '"+music.getName()+"' removida da playlist '"+playlist.getName()+"' com sucesso";
+    }
+    @PutMapping("/removeall/")
+    public String removeMusicFromAllPlaylists(@RequestBody MusicDTO musicDTO)throws PlaylistNotFoundException, MusicNotFoundException{
+        //getall playlists do banco não é a melhor ideia mas funciona por enquannto
+        List<Playlist> playlists = playlistService.findAllPlaylists();
+        Music music = musicService.findByTag(musicDTO.getTag());
+        for (Playlist playlist: playlists) {
+            List<Music> musics = playlist.getMusics();
+            for(int i = 0;i < musics.size();i++) {
+                if(musics.get(i).getTag()==musicDTO.getTag()){
+                    musics.remove(i);
+                }
+            }
+            music.setPlaylists(playlists);
+            playlistService.save(playlist);
+        }
+        music.setPlaylists(new ArrayList<>());
+        musicService.save(music);
+        return "Musica '"+music.getName()+"' removida de todas as playlists com sucesso";
     }
 }
