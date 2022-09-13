@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,6 +44,7 @@ public class PlaylistController {
     }
 
     @DeleteMapping
+    @Transactional
     public String deleteUserPlaylist(@RequestBody PlaylistDTO playlistDTO)throws PlaylistNotFoundException{
         try {
             Playlist playlist = playlistService.findByTag(playlistDTO.getTag());
@@ -55,6 +57,7 @@ public class PlaylistController {
         return "Ocorreu um erro ao deletar playlist";
     }
     @PutMapping("/{user_id}")
+    @Transactional
     public String updateUserPlaylist(@PathVariable Long user_id, @RequestBody PlaylistDTO playlistDTO)throws User_infoNotFoundException, PlaylistNotFoundException{
         Playlist newPlaylist = playlistDTOService.mapPlaylist(playlistDTO,user_id);
         Playlist playlist = playlistService.findByTag(playlistDTO.getTag());
@@ -78,6 +81,7 @@ public class PlaylistController {
         return playlistDTOService.convertAllPlaylists();
     }
     @PostMapping("/{id}")
+    @Transactional
     public String savePlaylist(@RequestBody PlaylistDTO playlistDTO, @PathVariable Long id) throws User_infoNotFoundException,PlaylistNotFoundException {
         Playlist newPlaylist = playlistDTOService.mapPlaylist(playlistDTO,id);
         playlistService.save(newPlaylist);

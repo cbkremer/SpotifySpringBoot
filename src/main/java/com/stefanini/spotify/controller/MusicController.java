@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -58,6 +59,7 @@ public class MusicController {
         return musicDTOService.convertAllMusics();
     }
     @DeleteMapping
+    @Transactional
     public String deleteMusic(@RequestBody MusicDTO musicDTO)throws MusicNotFoundException {
         try{
             Music music = musicService.findByTag(musicDTO.getTag());
@@ -70,6 +72,7 @@ public class MusicController {
         return "Ocorreu um erro ao deletar a musica";
     }
     @PutMapping
+    @Transactional
     public String updateMusic(@RequestBody MusicDTO musicDTO)throws MusicNotFoundException{
         try {
             Music music = musicService.findByTag(musicDTO.getTag());
@@ -84,6 +87,7 @@ public class MusicController {
         return "Ocorreu um erro ao atualizar a música";
     }
     @PutMapping("{playlist_tag}")
+    @Transactional
     public String addMusicToPlaylist(@PathVariable int playlist_tag, @RequestBody MusicDTO musicDTO)throws MusicNotFoundException, PlaylistNotFoundException {
         Playlist playlist = playlistService.findByTag(playlist_tag);
         Music music = musicService.findByTag(musicDTO.getTag());
@@ -103,6 +107,7 @@ public class MusicController {
         return "A música '"+music.getName()+"' foi adicionada a playlist '"+playlist.getName()+"' com sucesso";
     }
     @PutMapping("/remove/{playlist_tag}")
+    @Transactional
     public String removeMusicFromPlaylist(@PathVariable int playlist_tag, @RequestBody MusicDTO musicDTO)throws PlaylistNotFoundException, MusicNotFoundException{
         Playlist playlist = playlistService.findByTag(playlist_tag);
         Music music = musicService.findByTag(musicDTO.getTag());
@@ -125,6 +130,7 @@ public class MusicController {
         return "Musica '"+music.getName()+"' removida da playlist '"+playlist.getName()+"' com sucesso";
     }
     @PutMapping("/removeall/")
+    @Transactional
     public String removeMusicFromAllPlaylists(@RequestBody MusicDTO musicDTO)throws PlaylistNotFoundException, MusicNotFoundException{
         //getall playlists do banco não é a melhor ideia mas funciona por enquannto
         List<Playlist> playlists = playlistService.findAllPlaylists();

@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -51,6 +52,7 @@ public class User_infoController {
         return User_infoDTOService.convertUser(user,playlists);
     }
     @PostMapping
+    @Transactional
     public String addUser_info(@RequestBody User_infoDTO user_infoDTO) throws User_infoNotFoundException{
         User_info newUser = user_infoService.findByName(user_infoDTO.getName());
         if(newUser == null) {
@@ -69,6 +71,7 @@ public class User_infoController {
         }
     }
     @PutMapping("/name/{id}")
+    @Transactional
     public String updateUser_infoName(@PathVariable Long id,@RequestBody User_infoDTO user_infoDTO) throws User_infoNotFoundException{
         User_info newUserName = user_infoService.findByName(user_infoDTO.getName());
         User_info oldUser_info = user_infoService.findById(id);
@@ -86,6 +89,7 @@ public class User_infoController {
         }
     }
     @PutMapping("/email/{id}")
+    @Transactional
     public String updateUser_infoEmail(@PathVariable Long id,@RequestBody User_infoDTO user_infoDTO) throws User_infoNotFoundException{
         User_info newUserEmail = user_infoService.findByEmail(user_infoDTO.getEmail());
         User_info oldUser_info = user_infoService.findById(id);
@@ -103,6 +107,7 @@ public class User_infoController {
         }
     }
     @PutMapping("/password/{id}")
+    @Transactional
     public String updateUser_infoPassword(@PathVariable Long id,@RequestBody User_infoDTO user_infoDTO) throws User_infoNotFoundException{
         User_info oldUser_info = user_infoService.findById(id);
         User_info user_info = userInfoDTOService.mapUser(user_infoDTO);
@@ -114,6 +119,7 @@ public class User_infoController {
 
     }
     @DeleteMapping("/{id}")
+    @Transactional
     public String deleteUser_info(@PathVariable Long id){
         User_info user_info;
         try{
