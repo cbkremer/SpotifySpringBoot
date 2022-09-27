@@ -71,7 +71,6 @@ public class PlaylistDTOService {
     }
     public Playlist mapPlaylist(PlaylistDTO playlist,Long id,MusicDTOService musicDTOService)throws User_infoNotFoundException,PlaylistNotFoundException, MusicNotFoundException {
         User_info userInfo;
-        System.out.println("==========size====================="+playlist.getMusicsDTO().size());
         Playlist newPlaylist = new Playlist(
                                         null,
                                         playlist.getName(),

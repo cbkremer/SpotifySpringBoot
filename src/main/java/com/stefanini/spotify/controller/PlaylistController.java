@@ -66,7 +66,6 @@ public class PlaylistController {
     public String updateUserPlaylist(@PathVariable Long user_id, @RequestBody PlaylistDTO playlistDTO)throws User_infoNotFoundException, PlaylistNotFoundException, MusicNotFoundException {
         Playlist newPlaylist = playlistDTOService.mapPlaylist(playlistDTO,user_id,musicDTOService);
         Playlist playlist = playlistService.findByTag(playlistDTO.getTag());
-        System.out.println("==========================="+newPlaylist.getMusics().size());
         String oldPlaylistName = playlist.getName();
         newPlaylist.setTag(playlistDTO.getTag());
         newPlaylist.setId(playlist.getId());

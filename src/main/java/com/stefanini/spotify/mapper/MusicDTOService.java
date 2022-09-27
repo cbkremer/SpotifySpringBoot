@@ -36,7 +36,6 @@ public class MusicDTOService {
     public List<Music> mapMusics(List<MusicDTO> musicsDTO)throws MusicNotFoundException{
         List<Music> musics = new ArrayList<>();
         for (MusicDTO music:musicsDTO) {
-            System.out.println("===============name================="+music.getName());
             musicService.findByTag(music.getTag());
             musics.add(new Music(
                     musicService.findByTag(music.getTag()).getId(),
