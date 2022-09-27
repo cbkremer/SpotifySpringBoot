@@ -4,6 +4,7 @@ import com.stefanini.spotify.dto.PlaylistDTO;
 import com.stefanini.spotify.dto.User_infoDTO;
 import com.stefanini.spotify.exception.PlaylistNotFoundException;
 import com.stefanini.spotify.exception.User_infoNotFoundException;
+import com.stefanini.spotify.mapper.MusicDTOService;
 import com.stefanini.spotify.mapper.PlaylistDTOService;
 import com.stefanini.spotify.mapper.User_infoDTOService;
 import com.stefanini.spotify.model.Playlist;
@@ -11,6 +12,9 @@ import com.stefanini.spotify.model.User_info;
 import com.stefanini.spotify.service.PlaylistService;
 import com.stefanini.spotify.service.User_infoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -28,27 +32,41 @@ public class User_infoController {
     private final User_infoDTOService userInfoDTOService;
     private final PlaylistDTOService playlistDTOService;
     private final PlaylistService playlistService;
+    private final MusicDTOService musicDTOService;
 
     @Autowired
-    public User_infoController(User_infoService userService, User_infoDTOService userInfoDTOService,PlaylistDTOService playlistDTOService,PlaylistService playlistService){
+    public User_infoController(User_infoService userService, User_infoDTOService userInfoDTOService,PlaylistDTOService playlistDTOService,PlaylistService playlistService,MusicDTOService musicDTOService){
         this.user_infoService = userService;
         this.userInfoDTOService = userInfoDTOService;
         this.playlistDTOService = playlistDTOService;
         this.playlistService = playlistService;
+        this.musicDTOService=musicDTOService;
     }
 
     @Autowired
 
     @RequestMapping
-    public List<User_infoDTO> listUser_info()throws User_infoNotFoundException{
-        List <User_info> users = user_infoService.findAllUsers();
-        List<Playlist> playlists = playlistService.findAllPlaylists();
-        return User_infoDTOService.convertList(users,playlists);
+    public ModelAndView loadHtml(){
+        ModelAndView mv = new ModelAndView("user_info");
+        User_infoDTO user_infoDTO = new User_infoDTO();
+
+        mv.addObject("user_infoDTO", user_infoDTO);
+
+        return mv;
     }
-    @RequestMapping("/{id}")
+
+    @GetMapping
+    public Page<User_infoDTO> listUser_info(@RequestParam int pag, @RequestParam int qtd)throws User_infoNotFoundException{
+
+        Pageable paginacao = PageRequest.of(pag, qtd);
+
+        Page<User_info> users = user_infoService.findAllUsers(paginacao);
+        return User_infoDTOService.convertList(users,paginacao,playlistDTOService,musicDTOService);
+    }
+    @GetMapping("/{id}")
     public User_infoDTO user_info(@PathVariable Long id) throws User_infoNotFoundException{
         User_info user = user_infoService.findById(id);
-        List<PlaylistDTO> playlists = playlistDTOService.convertPlaylistsByUserId(id);
+        List<PlaylistDTO> playlists = playlistDTOService.convertPlaylistsByUserId(id,musicDTOService);
         return User_infoDTOService.convertUser(user,playlists);
     }
     @PostMapping

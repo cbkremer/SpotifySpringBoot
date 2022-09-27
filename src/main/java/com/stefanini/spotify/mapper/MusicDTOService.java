@@ -5,6 +5,7 @@ import com.stefanini.spotify.dto.MusicDTO;
 import com.stefanini.spotify.dto.PlaylistDTO;
 import com.stefanini.spotify.exception.MusicNotFoundException;
 import com.stefanini.spotify.exception.PlaylistNotFoundException;
+import com.stefanini.spotify.exception.User_infoNotFoundException;
 import com.stefanini.spotify.model.Music;
 import com.stefanini.spotify.model.Playlist;
 import com.stefanini.spotify.service.MusicService;
@@ -32,15 +33,40 @@ public class MusicDTOService {
         );
         return newMusic;
     }
-    public List<MusicDTO> convertAllMusics()throws MusicNotFoundException{
+    public List<Music> mapMusics(List<MusicDTO> musicsDTO)throws MusicNotFoundException{
+        List<Music> musics = new ArrayList<>();
+        for (MusicDTO music:musicsDTO) {
+            System.out.println("===============name================="+music.getName());
+            musicService.findByTag(music.getTag());
+            musics.add(new Music(
+                    musicService.findByTag(music.getTag()).getId(),
+                    music.getName(),
+                    null,
+                    music.getTag()
+            ));
+        }
+        return musics;
+    }
+    public List<MusicDTO> convertAllMusics()throws MusicNotFoundException {
         List<MusicDTO> allMusicsDTO = new ArrayList<>();
         List<Music> allMusics = musicService.findAllMusics();
         //List<Playlist> allPlaylists = playlistService.findAllPlaylists();
         for (Music music:allMusics) {
             allMusicsDTO.add(new MusicDTO(
                music.getName(),
-               null,
+                    null,
                     generateTag()
+            ));
+        }
+        return allMusicsDTO;
+    }
+    public List<MusicDTO> convertMusics(List<Music> musics){
+        List<MusicDTO> allMusicsDTO = new ArrayList<>();
+        for (Music music: musics) {
+            allMusicsDTO.add(new MusicDTO(
+                    music.getName(),
+                    null,
+                    music.getTag()
             ));
         }
         return allMusicsDTO;

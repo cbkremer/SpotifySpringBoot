@@ -5,12 +5,16 @@ import com.stefanini.spotify.dto.MusicDTO;
 import com.stefanini.spotify.dto.PlaylistDTO;
 import com.stefanini.spotify.exception.MusicNotFoundException;
 import com.stefanini.spotify.exception.PlaylistNotFoundException;
+import com.stefanini.spotify.exception.User_infoNotFoundException;
 import com.stefanini.spotify.mapper.MusicDTOService;
+import com.stefanini.spotify.mapper.PlaylistDTOService;
 import com.stefanini.spotify.model.Music;
 import com.stefanini.spotify.model.Playlist;
 import com.stefanini.spotify.service.MusicService;
 import com.stefanini.spotify.service.PlaylistService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -26,12 +30,14 @@ public class MusicController {
     private final MusicService musicService;
     private final MusicDTOService musicDTOService;
     private final PlaylistService playlistService;
+    private final PlaylistDTOService playlistDTOService;
 
     @Autowired
-    public MusicController(MusicService musicService, MusicDTOService musicDTOService,PlaylistService playlistService){
+    public MusicController(MusicService musicService, MusicDTOService musicDTOService,PlaylistService playlistService,PlaylistDTOService playlistDTOService){
         this.musicService=musicService;
         this.musicDTOService=musicDTOService;
         this.playlistService=playlistService;
+        this.playlistDTOService=playlistDTOService;
     }
 
     @Autowired
@@ -55,7 +61,7 @@ public class MusicController {
     }
 
     @GetMapping
-    public List<MusicDTO> getAllMusics()throws MusicNotFoundException{
+    public List<MusicDTO> getAllMusics()throws MusicNotFoundException {
         return musicDTOService.convertAllMusics();
     }
     @DeleteMapping
@@ -133,6 +139,9 @@ public class MusicController {
     @Transactional
     public String removeMusicFromAllPlaylists(@RequestBody MusicDTO musicDTO)throws PlaylistNotFoundException, MusicNotFoundException{
         //getall playlists do banco não é a melhor ideia mas funciona por enquannto
+
+        //Pageable paginacao = PageRequest.of(pag,qtd);
+
         List<Playlist> playlists = playlistService.findAllPlaylists();
         Music music = musicService.findByTag(musicDTO.getTag());
         for (Playlist playlist: playlists) {

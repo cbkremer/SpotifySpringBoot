@@ -3,6 +3,8 @@ package com.stefanini.spotify.service;
 import com.stefanini.spotify.exception.User_infoNotFoundException;
 import com.stefanini.spotify.model.User_info;
 import com.stefanini.spotify.repository.User_infoRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,6 +15,9 @@ public class User_infoService {
 
     public User_infoService(User_infoRepository userInfoRepository){
         this.userInfoRepository = userInfoRepository;
+    }
+    public Page<User_info> findAllUsers(Pageable paginacao){
+        return userInfoRepository.findAll(paginacao);
     }
     public List<User_info> findAllUsers(){
         return userInfoRepository.findAll();

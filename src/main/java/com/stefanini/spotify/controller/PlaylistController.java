@@ -1,9 +1,12 @@
 package com.stefanini.spotify.controller;
 
 import com.stefanini.spotify.dto.PlaylistDTO;
+import com.stefanini.spotify.exception.MusicNotFoundException;
 import com.stefanini.spotify.exception.PlaylistNotFoundException;
 import com.stefanini.spotify.exception.User_infoNotFoundException;
+import com.stefanini.spotify.mapper.MusicDTOService;
 import com.stefanini.spotify.mapper.PlaylistDTOService;
+import com.stefanini.spotify.model.Music;
 import com.stefanini.spotify.model.Playlist;
 import com.stefanini.spotify.model.User_info;
 import com.stefanini.spotify.service.PlaylistService;
@@ -24,11 +27,13 @@ public class PlaylistController {
     private final PlaylistService playlistService;
     private final PlaylistDTOService playlistDTOService;
     private final User_infoService user_infoService;
+    private final MusicDTOService musicDTOService;
     @Autowired
-    public PlaylistController(PlaylistDTOService playlistDTOService, PlaylistService playlistService, User_infoService user_infoService){
+    public PlaylistController(PlaylistDTOService playlistDTOService, PlaylistService playlistService, User_infoService user_infoService,MusicDTOService musicDTOService){
         this.playlistDTOService = playlistDTOService;
         this.playlistService = playlistService;
         this.user_infoService = user_infoService;
+        this.musicDTOService=musicDTOService;
     }
 
     @Autowired
@@ -58,9 +63,10 @@ public class PlaylistController {
     }
     @PutMapping("/{user_id}")
     @Transactional
-    public String updateUserPlaylist(@PathVariable Long user_id, @RequestBody PlaylistDTO playlistDTO)throws User_infoNotFoundException, PlaylistNotFoundException{
-        Playlist newPlaylist = playlistDTOService.mapPlaylist(playlistDTO,user_id);
+    public String updateUserPlaylist(@PathVariable Long user_id, @RequestBody PlaylistDTO playlistDTO)throws User_infoNotFoundException, PlaylistNotFoundException, MusicNotFoundException {
+        Playlist newPlaylist = playlistDTOService.mapPlaylist(playlistDTO,user_id,musicDTOService);
         Playlist playlist = playlistService.findByTag(playlistDTO.getTag());
+        System.out.println("==========================="+newPlaylist.getMusics().size());
         String oldPlaylistName = playlist.getName();
         newPlaylist.setTag(playlistDTO.getTag());
         newPlaylist.setId(playlist.getId());
@@ -70,7 +76,7 @@ public class PlaylistController {
     }
     @GetMapping("/{id}")
     public List<PlaylistDTO> getUserPlaylists(@PathVariable Long id)throws User_infoNotFoundException {
-        return playlistDTOService.convertPlaylistsByUserId(id);
+        return playlistDTOService.convertPlaylistsByUserId(id,musicDTOService);
     }
     @GetMapping("/music/{id}")
     public List<PlaylistDTO> getUserPlaylistMusic(@PathVariable Long id)throws User_infoNotFoundException{
@@ -78,12 +84,12 @@ public class PlaylistController {
     }
     @GetMapping
     public List<PlaylistDTO> getAllPlaylists(){
-        return playlistDTOService.convertAllPlaylists();
+        return playlistDTOService.convertAllPlaylists(musicDTOService);
     }
     @PostMapping("/{id}")
     @Transactional
-    public String savePlaylist(@RequestBody PlaylistDTO playlistDTO, @PathVariable Long id) throws User_infoNotFoundException,PlaylistNotFoundException {
-        Playlist newPlaylist = playlistDTOService.mapPlaylist(playlistDTO,id);
+    public String savePlaylist(@RequestBody PlaylistDTO playlistDTO, @PathVariable Long id) throws User_infoNotFoundException,PlaylistNotFoundException,MusicNotFoundException {
+        Playlist newPlaylist = playlistDTOService.mapPlaylist(playlistDTO,id,musicDTOService);
         playlistService.save(newPlaylist);
         User_info user = user_infoService.findById(id);
         return user.getName()+", sua playlist: "+playlistDTO.getName()+" foi criada com sucesso";

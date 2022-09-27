@@ -9,14 +9,13 @@ public class PlaylistDTO {
     private Long quantity;
     private String user_name;
     private int tag;
-    private List<Music> musics;
-    public PlaylistDTO(String name, Long quantity, String user_name, int tag, List<Music> musics){
+    private List<MusicDTO> musicsDTO;
+    public PlaylistDTO(String name, Long quantity, String user_name, int tag, List<MusicDTO> musicsDTO){
         this.name = name;
         this.quantity = quantity;
         this.user_name = user_name;
         this.tag = tag;
-        this.musics=musics;
-
+        this.musicsDTO=musicsDTO;
     }
     public PlaylistDTO(){
 
@@ -47,5 +46,11 @@ public class PlaylistDTO {
 
     public int getTag() {
         return tag;
+    }
+    public void setMusicsDTO(List<MusicDTO> musicsDTO){
+        this.musicsDTO=musicsDTO;
+    }
+    public List<MusicDTO> getMusicsDTO(){
+        return musicsDTO;
     }
 }

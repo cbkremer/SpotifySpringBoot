@@ -4,6 +4,8 @@ import com.stefanini.spotify.exception.PlaylistNotFoundException;
 import com.stefanini.spotify.model.Playlist;
 import com.stefanini.spotify.model.User_info;
 import com.stefanini.spotify.repository.PlaylistRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +16,9 @@ public class PlaylistService {
 
     public PlaylistService(PlaylistRepository playlistRepository){
         this.playlistRepository = playlistRepository;
+    }
+    public Page<Playlist> findAllPlaylists(Pageable paginacao){
+        return playlistRepository.findAll(paginacao);
     }
     public List<Playlist> findAllPlaylists(){
         return playlistRepository.findAll();
