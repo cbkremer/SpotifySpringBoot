@@ -107,6 +107,11 @@ public class MusicController {
         musics.add(music);
         playlists.add(playlist);
         playlist.setMusics(musics);
+        long count = 0;
+        for (Music playMusic: playlist.getMusics()) {
+            count++;
+        }
+        playlist.setQuantity(count);
         playlistService.save(playlist);
         music.setPlaylists(playlists);
         musicService.save(music);
