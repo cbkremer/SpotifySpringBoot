@@ -12,6 +12,8 @@ import com.stefanini.spotify.model.User_info;
 import com.stefanini.spotify.service.PlaylistService;
 import com.stefanini.spotify.service.User_infoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -56,6 +58,7 @@ public class User_infoController {
     }
 
     @GetMapping
+    @Cacheable(value = "listaDeUsuarios")
     public Page<User_infoDTO> listUser_info(@RequestParam int pag, @RequestParam int qtd)throws User_infoNotFoundException{
 
         Pageable paginacao = PageRequest.of(pag, qtd);
@@ -71,6 +74,7 @@ public class User_infoController {
     }
     @PostMapping
     @Transactional
+    @CacheEvict(value = "listaDeUsuarios")
     public String addUser_info(@RequestBody User_infoDTO user_infoDTO) throws User_infoNotFoundException{
         User_info newUser = user_infoService.findByName(user_infoDTO.getName());
         if(newUser == null) {
@@ -90,6 +94,7 @@ public class User_infoController {
     }
     @PutMapping("/name/{id}")
     @Transactional
+    @CacheEvict(value = "listaDeUsuarios")
     public String updateUser_infoName(@PathVariable Long id,@RequestBody User_infoDTO user_infoDTO) throws User_infoNotFoundException{
         User_info newUserName = user_infoService.findByName(user_infoDTO.getName());
         User_info oldUser_info = user_infoService.findById(id);
@@ -108,6 +113,7 @@ public class User_infoController {
     }
     @PutMapping("/email/{id}")
     @Transactional
+    @CacheEvict(value = "listaDeUsuarios")
     public String updateUser_infoEmail(@PathVariable Long id,@RequestBody User_infoDTO user_infoDTO) throws User_infoNotFoundException{
         User_info newUserEmail = user_infoService.findByEmail(user_infoDTO.getEmail());
         User_info oldUser_info = user_infoService.findById(id);
@@ -126,6 +132,7 @@ public class User_infoController {
     }
     @PutMapping("/password/{id}")
     @Transactional
+    @CacheEvict(value = "listaDeUsuarios")
     public String updateUser_infoPassword(@PathVariable Long id,@RequestBody User_infoDTO user_infoDTO) throws User_infoNotFoundException{
         User_info oldUser_info = user_infoService.findById(id);
         User_info user_info = userInfoDTOService.mapUser(user_infoDTO);
@@ -138,6 +145,7 @@ public class User_infoController {
     }
     @DeleteMapping("/{id}")
     @Transactional
+    @CacheEvict(value = "listaDeUsuarios")
     public String deleteUser_info(@PathVariable Long id){
         User_info user_info;
         try{
