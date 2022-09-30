@@ -39,7 +39,7 @@ public class User_infoDTOService {
         this.musicService=musicService;
         this.musicDTOService=musicDTOService;
     }
-    public static Page<User_infoDTO> convertList(Page<User_info> users, Pageable paginacao, PlaylistDTOService playlistDTOService,MusicDTOService musicDTOService)throws User_infoNotFoundException {
+    public static List<User_infoDTO> convertList(List<User_info> users, PlaylistDTOService playlistDTOService,MusicDTOService musicDTOService)throws User_infoNotFoundException {
 
         List<User_infoDTO> allUsers = new ArrayList<>();
         for (User_info user : users) {
@@ -50,7 +50,7 @@ public class User_infoDTOService {
                     playlistDTOService.convertPlaylists(user.getPlaylists(),musicDTOService)
             ));
         }
-        return users.map(User_infoDTO::new);
+        return allUsers;
     }
     public static User_infoDTO convertUser(User_info user,List<PlaylistDTO> playlistsDTO){
         User_infoDTO newUser_infoDTO = new User_infoDTO(
@@ -61,7 +61,7 @@ public class User_infoDTOService {
         );
         return newUser_infoDTO;
     }
-    public User_info mapUser(User_infoDTO user){
+    public static User_info mapUser(User_infoDTO user){
         //Playlist playlist;
         User_info newUserInfo =  new User_info(
                 null,

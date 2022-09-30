@@ -17,12 +17,17 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.util.UriBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.transaction.Transactional;
+import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -59,14 +64,12 @@ public class User_infoController {
 
     @GetMapping
     @Cacheable(value = "listaDeUsuarios")
-    public Page<User_infoDTO> listUser_info(@RequestParam int pag, @RequestParam int qtd)throws User_infoNotFoundException{
-
-        Pageable paginacao = PageRequest.of(pag, qtd);
-
-        Page<User_info> users = user_infoService.findAllUsers(paginacao);
-        return User_infoDTOService.convertList(users,paginacao,playlistDTOService,musicDTOService);
+    public List<User_infoDTO> listUser_info()throws User_infoNotFoundException{
+        List<User_info> users = user_infoService.findAllUsers();
+        return User_infoDTOService.convertList(users,playlistDTOService,musicDTOService);
     }
     @GetMapping("/{id}")
+    @Cacheable(value = "umUsuario")
     public User_infoDTO user_info(@PathVariable Long id) throws User_infoNotFoundException{
         User_info user = user_infoService.findById(id);
         List<PlaylistDTO> playlists = playlistDTOService.convertPlaylistsByUserId(id,musicDTOService);
@@ -75,21 +78,26 @@ public class User_infoController {
     @PostMapping
     @Transactional
     @CacheEvict(value = "listaDeUsuarios")
-    public String addUser_info(@RequestBody User_infoDTO user_infoDTO) throws User_infoNotFoundException{
+    public ResponseEntity<User_infoDTO> addUser_info(@RequestBody User_infoDTO user_infoDTO, UriComponentsBuilder uriBuilder) throws User_infoNotFoundException{
         User_info newUser = user_infoService.findByName(user_infoDTO.getName());
         if(newUser == null) {
             newUser = user_infoService.findByEmail(user_infoDTO.getEmail());
             if(newUser == null) {
                 User_info newUser_info = userInfoDTOService.mapUser(user_infoDTO);
                 user_infoService.save(newUser_info);
-                return "Usuário " + user_infoDTO.getName() + " criado com sucesso";
+                URI uri = uriBuilder.path("/user_info/{id}").buildAndExpand(newUser_info.getId()).toUri();
+                List<PlaylistDTO> playlistDTO = new ArrayList<>();
+                return ResponseEntity.created(uri).body(User_infoDTOService.convertUser(newUser_info,playlistDTO));
+                //return "Usuário " + user_infoDTO.getName() + " criado com sucesso";
             }
             else{
-                return "O email '"+user_infoDTO.getEmail()+"' já existe";
+                return ResponseEntity.unprocessableEntity().body(User_infoDTOService.convertUser(newUser,null));
+                //return "O email '"+user_infoDTO.getEmail()+"' já existe";
             }
         }
         else{
-            return "O nome '"+user_infoDTO.getName()+"' já existe";
+            return ResponseEntity.unprocessableEntity().body(User_infoDTOService.convertUser(newUser,null));
+            //return "O nome '"+user_infoDTO.getName()+"' já existe";
         }
     }
     @PutMapping("/name/{id}")

@@ -69,8 +69,9 @@ public class MusicController {
     public String deleteMusic(@RequestBody MusicDTO musicDTO)throws MusicNotFoundException {
         try{
             Music music = musicService.findByTag(musicDTO.getTag());
+            String music_name = music.getName();
             musicService.delete(music);
-            return "Musica "+musicDTO.getName()+" deletada com sucesso";
+            return "Musica "+music_name+" deletada com sucesso";
         }
         catch (MusicNotFoundException ex){
             Logger.getLogger(MusicController.class.getName()).log(Level.SEVERE,null,ex);
@@ -135,6 +136,11 @@ public class MusicController {
                 playlists.remove(i);
             }
         }
+        long count = 0;
+        for (Music playMusic: playlist.getMusics()) {
+            count++;
+        }
+        playlist.setQuantity(count);
         music.setPlaylists(playlists);
         playlistService.save(playlist);
         musicService.save(music);
@@ -156,6 +162,11 @@ public class MusicController {
                     musics.remove(i);
                 }
             }
+            long count = 0;
+            for (Music playMusic: playlist.getMusics()) {
+                count++;
+            }
+            playlist.setQuantity(count);
             music.setPlaylists(playlists);
             playlistService.save(playlist);
         }
