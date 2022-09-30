@@ -3,8 +3,13 @@ package com.stefanini.spotify.model;
 //import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-        import java.util.List;
+import java.util.AbstractList;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.*;
 
@@ -13,7 +18,7 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @Table(name = "user_info")
-public class User_info {
+public class User_info implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,7 +34,8 @@ public class User_info {
 
     @OneToMany(mappedBy = "userInfo")
     private List<Playlist> playlists;
-
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<Profile> profiles = new ArrayList<>();
     public User_info(Long id, String name, String email, String password){
         this.id = id;
         this.name = name;
@@ -66,8 +72,39 @@ public class User_info {
         this.password = password;
     }
 
+    //authentication
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return profiles;
+    }
+
     public String getPassword() {
-        return password;
+        return this.password;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
 }
