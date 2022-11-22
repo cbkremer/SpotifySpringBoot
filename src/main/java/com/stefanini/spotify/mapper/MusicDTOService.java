@@ -54,7 +54,7 @@ public class MusicDTOService {
             allMusicsDTO.add(new MusicDTO(
                music.getName(),
                     null,
-                    generateTag()
+                    music.getTag()
             ));
         }
         return allMusicsDTO;
